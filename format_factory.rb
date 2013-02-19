@@ -2,14 +2,9 @@ class Format
   class NotFoundException < RuntimeError; end
 
   def self.find(type)
-    case type
-    when :plain
-      PlainFormat.new
-    when :html
-      HtmlFormat.new
-    when :json
-      JsonFormat.new
-    else
+    begin
+      format = Object.const_get("#{type.to_s.capitalize}Format").new
+    rescue NameError
       raise Format::NotFoundException
     end
   end
@@ -63,6 +58,17 @@ end
 class JsonFormat < Format
   def generate(report)
     {title: report.title, lines: report.text}
+  end
+end
+
+class ChrisFormat < Format
+  def generate(report)
+    "".tap do |result|
+      result << report.title
+      report.text.each do |t|
+        result << "\nChris: #{t}"
+      end
+    end
   end
 end
 

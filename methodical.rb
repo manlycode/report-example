@@ -7,6 +7,7 @@ class Report
       "date >= '#{Time.now.year}-01-01' AND state=?",
       "active"
     ).order("date DESC")
+
     @text = logs.map do |log|
       status = "#{log.date}: #{log.message} (#{log.alert_level})"
     end
@@ -40,6 +41,8 @@ class Report
     @text.each do |line|
       output[:lines] << line
     end
+
+    output
   end
 
   def generate(format)
